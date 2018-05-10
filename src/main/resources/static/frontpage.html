@@ -128,26 +128,20 @@ class MovieForm extends React.Component {
 	<div className="panel panel-default" style={{backgroundColor: '#defcf8'}}>
 		<div className="panel-heading" style={{textAlign: 'center'}}>Uusi Leffa</div>
 			<div className="panel-body"></div>
-			<form className="form-inline" style={{paddingBottom: 50, textAlign: 'center', alignItems: 'center', justifyContent: 'center'}}>
+			<form className="form-inline" style={{paddingBottom: 50, display: 'flex', textAlign: 'center',alignItems: 'center', flexDirection: 'column', justifyContent: 'center'}}>
 				<div className="col-md-2">
 					Elokuvan nimi: <input type="text" className="form-control" name="name" onChange={this.handleChange}/>
 				</div>
 				 <br/>
- 				<br/>
- 				<br/>
+
 				<div className="col-md-2">
-					Ilmestymisvuosi: <input type="text" placeholder="year" className="form-control" name="year" onChange={this.handleChange}/>
+					Ilmestymisvuosi: <input type="text" className="form-control" name="year" onChange={this.handleChange}/>
 				</div>
  				<br/>
- 				<br/>
- 				<br/>
 				<div className="col-md-2">
-					Genre:<input type="text" placeholder="genre" className="form-control" name="genre" onChange={this.handleChange}/>
+					Genre:<input type="text" className="form-control" name="genre" onChange={this.handleChange}/>
 				</div>
 				 <br/>
- 				<br/>
- 				<br/>
-
 				<button className="btn btn-success" style={{marginLeft: 25}} onClick={this.handleSubmit}>Save</button>
 			</form>
 	</div>
@@ -248,22 +242,23 @@ this.props.deleteMovie(this.props.movie);
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title" style={{textAlign: 'center'}}>
-              Contained Modal
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-			<div className="panel panel-default">
-                <div className="panel-heading">Edit student</div>
+			<div className="panel panel-default" style={{backgroundColor: '#defcf8'}}>
+                <div className="panel-heading" style={{textAlign:'center'}}>Edit Movie</div>
                 <div className="panel-body">
-                <form className="form">
+                <form className="form" style={{paddingBottom: 50, display: 'flex', textAlign: 'center',alignItems: 'center', flexDirection: 'column', justifyContent: 'center'}}>
                     <div className="col-md-4">
-                        <input type="text" placeholder="name" className="form-control"  name="name" value={this.state.name} onChange={this.handleChange}/>    
+                        Name: <input type="text" placeholder="name" className="form-control"  name="name" value={this.state.name} onChange={this.handleChange}/>    
                     </div>
+					<br />
                     <div className="col-md-4">       
-                        <input type="text" placeholder="year" className="form-control" name="year" value={this.state.year} onChange={this.handleChange}/>
+                       Year: <input type="text" placeholder="year" className="form-control" name="year" value={this.state.year} onChange={this.handleChange}/>
                     </div>
+					<br />
                     <div className="col-md-4">
-                        <input type="text" placeholder="genre" className="form-control" name="genre" value={this.state.genre} onChange={this.handleChange}/>
+                       Genre: <input type="text" placeholder="genre" className="form-control" name="genre" value={this.state.genre} onChange={this.handleChange}/>
                     </div>
                     <div>
           
