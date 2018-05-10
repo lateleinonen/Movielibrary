@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>React + Spring</title>
+  <link type="text/css" rel="stylesheet" href="frontpage.css" />
+</head>
+
+<body>
+  <div class='container'>
+    <div id='root'></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.3/react-bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+  <script type="text/babel">
+
+	const { Button, Modal } = ReactBootstrap;
+		
+
+
+  class App extends React.Component {  
+    constructor(props) {
+		super(props);
+
+		this.deleteMovie = this.deleteMovie.bind(this);
+		this.createMovie = this.createMovie.bind(this);
+    	this.updateMovie = this.updateMovie.bind(this);
+
+		this.state = {
+			movies: [],
+			};
+		}
+		
+		componentDidMount() {
+			this.loadMoviesFromServer();
+		}
+
+		loadMoviesFromServer() {
+			fetch('http://localhost:8080/api/movies')
+			.then((response) => response.json())
+			.then((responseData) => {
+				this.setState({
+				movies:
+				responseData._embedded.movies,
+				});
+			});
+		}
+
+		deleteMovie(movie) {
+		fetch (movie._links.self.href,
+		{ method: 'DELETE'})
+		.then(
+			res => this.loadMoviesFromServer()
+		)
+		.catch(err => console.error(err))
+		}
+
+		 createMovie(movie) {
+      fetch('http://localhost:8080/api/movies', 
+      {   method: 'POST', 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(movie)
+      })
+      .then( 
+          res => this.loadMoviesFromServer()
+      )
+      .catch( err => console.error(err))
+  }
+  // Update student
+  updateMovie(movie) {
+    fetch(movie.link, 
+    {   method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(movie)
+    })
+    .then( 
+        res => this.loadMoviesFromServer()
+    )
+    .catch( err => console.error(err))
+  }
+			
+    render() {
+     return (
+	  <div>
+			<MovieForm createMovie={this.createMovie}/>
+			<MovieTable deleteMovie={this.deleteMovie} updateMovie={this.updateMovie} movies={this.state.movies}/>
+	</div>
+		);
+	}
+}
+
+class MovieForm extends React.Component {
+	//Konstruktori
+	constructor(props) {
+		super(props);
+		this.state = {name: '', year: '', genre: ''};
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+
+	}
+
+	handleChange(event) {
+		this.setState(
+			{[event.target.name]: event.target.value}
+		);
+	}
+
+	handleSubmit(event) {
+		event.preventDefault();
+		var newMovie = {name: this.state.name,year: this.state.year, genre: this.state.genre};
+		this.props.createMovie(newMovie);
+	}
+
+	render() {
+		console.log("Test...");
+		return(
+			
+	<div className="panel panel-default" style={{backgroundColor: '#defcf8'}}>
+		<div className="panel-heading" style={{textAlign: 'center'}}>Uusi Leffa</div>
+			<div className="panel-body"></div>
+			<form className="form-inline" style={{paddingBottom: 50, textAlign: 'center', alignItems: 'center', justifyContent: 'center'}}>
+				<div className="col-md-2">
+					Elokuvan nimi: <input type="text" className="form-control" name="name" onChange={this.handleChange}/>
+				</div>
+				 <br/>
+ 				<br/>
+ 				<br/>
+				<div className="col-md-2">
+					Ilmestymisvuosi: <input type="text" placeholder="year" className="form-control" name="year" onChange={this.handleChange}/>
+				</div>
+ 				<br/>
+ 				<br/>
+ 				<br/>
+				<div className="col-md-2">
+					Genre:<input type="text" placeholder="genre" className="form-control" name="genre" onChange={this.handleChange}/>
+				</div>
+				 <br/>
+ 				<br/>
+ 				<br/>
+
+				<button className="btn btn-success" style={{marginLeft: 25}} onClick={this.handleSubmit}>Save</button>
+			</form>
+	</div>
+);
+	}
+}
+
+class MovieTable extends React.Component {
+	constructor(props){
+	super(props);
+}
+
+	render () {
+		var movies = this.props.movies.map(movie =>
+				<Movie key={movie._links.self.href} updateMovie={this.props.updateMovie} deleteMovie={this.props.deleteMovie} movie={movie}/>
+				);
+				return (
+				<div>
+					<table className="table table-stripped">
+						<thead>
+							<tr>
+								<th>name</th><th>year</th><th>genre</th><th></th>
+							</tr>
+						</thead>
+					<tbody>{movies}</tbody>
+					</table>
+				</div>
+					);
+				}
+		}
+  		        
+  		        
+  		        
+class Movie extends React.Component {
+	constructor(props) {
+		super(props);
+		this.deleteMovie = this.deleteMovie.bind(this);
+	}
+	
+	deleteMovie() {
+this.props.deleteMovie(this.props.movie);
+	}
+	
+	render() {
+		return(
+			<tr>	
+			<td>{this.props.movie.name}</td>
+			<td>{this.props.movie.year}</td>
+			<td>{this.props.movie.genre}</td>
+      <td>               
+         <MovieUpdateForm updateMovie={this.props.updateMovie} movie={this.props.movie}/>          
+      </td>
+			<td>
+				<button className="btn btn-danger" onClick={this.deleteMovie}>Delete</button>
+			</td>
+			</tr>
+			);
+		}
+	}
+  class MovieUpdateForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {name: this.props.movie.name, year: this.props.movie.year, genre: this.props.movie.genre};
+        this.handleSubmits = this.handleSubmits.bind(this);   
+		this.handleChange = this.handleChange.bind(this); 
+		this.handleHide = this.handleHide.bind(this);
+		
+		this.state = {show: false
+    };    
+}
+    handleChange(event) {
+        this.setState(
+            {[event.target.name]: event.target.value}
+        );
+    }    
+    
+    handleSubmits(event) {
+        event.preventDefault();
+        var updMovie = {link: this.props.movie._links.self.href ,name: this.state.name, year: this.state.year, genre: this.state.genre};
+        this.props.updateMovie(updMovie);
+		this.handleHide();     
+    }
+    handleHide() {
+    this.setState({ show: false });
+  }
+    render() {
+        return (
+			<div className="modal-container" style={{ height: 100 }}>
+        <Button
+          bsStyle="primary"
+          onClick={() => this.setState({ show: true })}>Edit</Button>
+
+        <Modal
+          show={this.state.show}
+          onHide={this.handleHide}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title" style={{textAlign: 'center'}}>
+              Contained Modal
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+			<div className="panel panel-default">
+                <div className="panel-heading">Edit student</div>
+                <div className="panel-body">
+                <form className="form">
+                    <div className="col-md-4">
+                        <input type="text" placeholder="name" className="form-control"  name="name" value={this.state.name} onChange={this.handleChange}/>    
+                    </div>
+                    <div className="col-md-4">       
+                        <input type="text" placeholder="year" className="form-control" name="year" value={this.state.year} onChange={this.handleChange}/>
+                    </div>
+                    <div className="col-md-4">
+                        <input type="text" placeholder="genre" className="form-control" name="genre" value={this.state.genre} onChange={this.handleChange}/>
+                    </div>
+                    <div>
+          
+                    </div>       
+                </form>
+                </div>      
+                </div>
+          </Modal.Body>
+          <Modal.Footer>
+			<Button className="btn btn-primary" onClick={this.handleSubmits}>Save</Button> 
+            <Button onClick={this.handleHide.bind()}>Close</Button>  
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+}
+ReactDOM.render(<App />, document.getElementById('root') );	
+</script>
+
+</body>
+
+</html>
