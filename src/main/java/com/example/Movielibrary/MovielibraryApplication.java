@@ -22,6 +22,7 @@ public class MovielibraryApplication {
 			repository.save(new Movie("Nasun Suuri Elokuva", "2003", "Animaatio"));
 			repository.save(new Movie("Muumipeikko ja pyrstötähti", "1992", "Animaatio"));
 			repository.save(new Movie("Liisa ihmemaassa", "1951", "Animaatio"));
+			repository.save(new Movie("Hohto", "1980", "Kauhu"));
 		};	
 	}
 }

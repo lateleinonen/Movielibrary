@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Movie Library</title>
+   <link type="text/css" rel="stylesheet" href="index.css" />
 </head>
 
 <body>
@@ -25,7 +26,7 @@
 		super(props);
 		this.deleteMovie = this.deleteMovie.bind(this);
 		this.createMovie = this.createMovie.bind(this);
-    	this.updateMovie = this.updateMovie.bind(this);
+    this.updateMovie = this.updateMovie.bind(this);
 		this.state = {
 			movies: [],
 			};
@@ -107,23 +108,23 @@ class MovieForm extends React.Component {
 		this.props.createMovie(newMovie);
 	}
 	render() {
-		console.log("Test...");
 		return(
 			
-	<div className="panel panel-default" style={{backgroundColor: '#defcf8'}}>
-		<div className="panel-heading" style={{textAlign: 'center'}}>Uusi Leffa</div>
+	<div className="panel panel-default" style={{backgroundImage: 'linear-gradient(#80c1ff, white)'}}>
+		<div className="panel-heading" style={{textAlign: 'center', backgroundColor: '#c5cbd6', fontSize: 20}}>Movie Collection</div>
 			<div className="panel-body"></div>
 			<form className="form-inline" style={{paddingBottom: 50, display: 'flex', textAlign: 'center',alignItems: 'center', flexDirection: 'column', justifyContent: 'center'}}>
 				<div className="col-md-2">
-					Elokuvan nimi: <input type="text" className="form-control" name="name" onChange={this.handleChange}/>
+					Name: <input type="text" className="form-control" name="name" onChange={this.handleChange}/>
 				</div>
 				<div className="col-md-2">
-					Ilmestymisvuosi: <input type="text" className="form-control" name="year" onChange={this.handleChange}/>
+					Year: <input type="text" className="form-control" name="year" onChange={this.handleChange}/>
 				</div>
 				<div className="col-md-2">
 					Genre:<input type="text" className="form-control" name="genre" onChange={this.handleChange}/>
 				</div>
-				<button className="btn btn-success" style={{marginLeft: 25, marginTop: 10}} onClick={this.handleSubmit}>Save</button>
+				<button style={{marginLeft: 25, marginTop: 10, backgroundColor: '#4CAF50', border: 1, borderRadius: 25,
+			color: 'white', paddingTop: 15, paddingBottom: 15, paddingLeft: 32, paddingRight: 32, fontSize: 16, textAlign: 'center'}} onClick={this.handleSubmit}>Save</button>
 			</form>
 	</div>
 );
@@ -139,10 +140,14 @@ class MovieTable extends React.Component {
 				);
 				return (
 				<div>
-					<table className="table table-bordered">
+					<table className="table table-striped table-bordered">
 						<thead>
-							<tr>
-								<th>Name</th><th>Year</th><th>Genre</th><th></th><th></th>
+							<tr style={{backgroundColor: '#c5cbd6'}}>
+								<th>Name</th>
+								<th>Year</th>
+								<th>Genre</th>
+								<th></th>
+								<th></th>
 							</tr>
 						</thead>
 					<tbody>{movies}</tbody>
@@ -172,7 +177,8 @@ this.props.deleteMovie(this.props.movie);
          <MovieUpdateForm updateMovie={this.props.updateMovie} movie={this.props.movie}/>          
       </td>
 			<td>
-				<button className="btn btn-danger" onClick={this.deleteMovie}>Delete</button>
+				<button style={{ backgroundColor: '#e82b0d', border: 1, borderRadius: 25,
+			color: 'white', paddingTop: 10, paddingBottom: 10, paddingLeft: 27, paddingRight: 27, fontSize: 16, textAlign: 'center'}} onClick={this.deleteMovie}>Delete</button>
 			</td>
 			</tr>
 			);
@@ -183,8 +189,8 @@ this.props.deleteMovie(this.props.movie);
         super(props);
         this.state = {name: this.props.movie.name, year: this.props.movie.year, genre: this.props.movie.genre};
         this.handleSubmits = this.handleSubmits.bind(this);   
-		this.handleChange = this.handleChange.bind(this); 
-		this.handleHide = this.handleHide.bind(this);
+				this.handleChange = this.handleChange.bind(this); 
+				this.handleHide = this.handleHide.bind(this);
 		
 		this.state = {show: false
     };    
@@ -199,7 +205,7 @@ this.props.deleteMovie(this.props.movie);
         event.preventDefault();
         var updMovie = {link: this.props.movie._links.self.href ,name: this.state.name, year: this.state.year, genre: this.state.genre};
         this.props.updateMovie(updMovie);
-		this.handleHide();     
+				this.handleHide();     
     }
     handleHide() {
     this.setState({ show: false });
@@ -208,7 +214,8 @@ this.props.deleteMovie(this.props.movie);
         return (
 			<div className="modal-container" style={{ height: 100 }}>
         <Button
-          bsStyle="primary"
+				style={{ backgroundColor: '#5694f7', border: 1, borderRadius: 25,
+			color: 'white', paddingTop: 10, paddingBottom: 10, paddingLeft: 27, paddingRight: 27, fontSize: 16, textAlign: 'center'}}
           onClick={() => this.setState({ show: true })}>Edit</Button>
         <Modal
           show={this.state.show}
@@ -221,31 +228,30 @@ this.props.deleteMovie(this.props.movie);
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-			<div className="panel panel-default" style={{backgroundColor: '#defcf8'}}>
-                <div className="panel-heading" style={{textAlign:'center'}}>Edit Movie</div>
-                <div className="panel-body">
-                <form className="form" style={{paddingBottom: 50, display: 'flex', textAlign: 'center',alignItems: 'center', flexDirection: 'column', justifyContent: 'center'}}>
-                    <div className="col-md-4">
-                        Name: <input type="text" placeholder="name" className="form-control"  name="name" value={this.state.name} onChange={this.handleChange}/>    
-                    </div>
-					<br />
-                    <div className="col-md-4">       
-                       Year: <input type="text" placeholder="year" className="form-control" name="year" value={this.state.year} onChange={this.handleChange}/>
-                    </div>
-					<br />
-                    <div className="col-md-4">
-                       Genre: <input type="text" placeholder="genre" className="form-control" name="genre" value={this.state.genre} onChange={this.handleChange}/>
-                    </div>
-                    <div>
-          
-                    </div>       
-                </form>
-                </div>      
-                </div>
+			<div className="panel panel-default" style={{backgroundImage: 'linear-gradient(#80c1ff, white)'}}>
+        <div className="panel-heading" style={{textAlign:'center'}}>Edit Movie</div>
+          <div className="panel-body">
+            <form className="form" style={{paddingBottom: 50, display: 'flex', textAlign: 'center',alignItems: 'center', flexDirection: 'column', justifyContent: 'center'}}>
+              <div className="col-md-4">
+              Name: <input type="text" placeholder="name" className="form-control"  name="name" value={this.state.name} onChange={this.handleChange}/>    
+              </div>
+							<br />
+              <div className="col-md-4">       
+              Year: <input type="text" placeholder="year" className="form-control" name="year" value={this.state.year} onChange={this.handleChange}/>
+              </div>
+							<br />
+              <div className="col-md-4">
+              Genre: <input type="text" placeholder="genre" className="form-control" name="genre" value={this.state.genre} onChange={this.handleChange}/>
+              </div>      
+            </form>
+          </div>      
+        </div>
           </Modal.Body>
           <Modal.Footer>
-			<Button className="btn btn-primary" onClick={this.handleSubmits}>Save</Button> 
-            <Button onClick={this.handleHide.bind()}>Close</Button>  
+						<Button style={{backgroundColor: '#4CAF50', border: 1, borderRadius: 25,
+			color: 'white', paddingTop: 10, paddingBottom: 10, paddingLeft: 27, paddingRight: 27, fontSize: 16, textAlign: 'center'}} onClick={this.handleSubmits}>Save</Button> 
+            <Button style={{ backgroundColor: '#e82b0d', border: 1, borderRadius: 25,
+			color: 'white', paddingTop: 10, paddingBottom: 10, paddingLeft: 27, paddingRight: 27, fontSize: 16, textAlign: 'center'}} onClick={this.handleHide.bind()}>Close</Button>  
           </Modal.Footer>
         </Modal>
       </div>
