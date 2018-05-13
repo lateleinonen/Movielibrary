@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MovieLibraryController {
 	
 	@RequestMapping(value = "/")
-	public String home() {
-		return "frontpage.html";
+	public String index() {
+		return "index";
 	}
 }

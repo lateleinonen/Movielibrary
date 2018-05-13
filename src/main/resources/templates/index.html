@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html>
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>React + Spring</title>
-  <link type="text/css" rel="stylesheet" href="frontpage.css" />
+  <title>Movie Library</title>
 </head>
 
 <body>
@@ -22,16 +20,12 @@
 
 	const { Button, Modal } = ReactBootstrap;
 		
-
-
   class App extends React.Component {  
     constructor(props) {
 		super(props);
-
 		this.deleteMovie = this.deleteMovie.bind(this);
 		this.createMovie = this.createMovie.bind(this);
     	this.updateMovie = this.updateMovie.bind(this);
-
 		this.state = {
 			movies: [],
 			};
@@ -40,7 +34,6 @@
 		componentDidMount() {
 			this.loadMoviesFromServer();
 		}
-
 		loadMoviesFromServer() {
 			fetch('http://localhost:8080/api/movies')
 			.then((response) => response.json())
@@ -51,7 +44,6 @@
 				});
 			});
 		}
-
 		deleteMovie(movie) {
 		fetch (movie._links.self.href,
 		{ method: 'DELETE'})
@@ -60,7 +52,6 @@
 		)
 		.catch(err => console.error(err))
 		}
-
 		 createMovie(movie) {
       fetch('http://localhost:8080/api/movies', 
       {   method: 'POST', 
@@ -74,7 +65,7 @@
       )
       .catch( err => console.error(err))
   }
-  // Update student
+
   updateMovie(movie) {
     fetch(movie.link, 
     {   method: 'PUT', 
@@ -92,35 +83,29 @@
     render() {
      return (
 	  <div>
-			<MovieForm createMovie={this.createMovie}/>
-			<MovieTable deleteMovie={this.deleteMovie} updateMovie={this.updateMovie} movies={this.state.movies}/>
+		<MovieForm createMovie={this.createMovie} />
+		<MovieTable deleteMovie={this.deleteMovie} updateMovie={this.updateMovie} movies={this.state.movies}/>
 	</div>
 		);
 	}
 }
-
 class MovieForm extends React.Component {
-	//Konstruktori
 	constructor(props) {
 		super(props);
 		this.state = {name: '', year: '', genre: ''};
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
-
 	}
-
 	handleChange(event) {
 		this.setState(
 			{[event.target.name]: event.target.value}
 		);
 	}
-
 	handleSubmit(event) {
 		event.preventDefault();
 		var newMovie = {name: this.state.name,year: this.state.year, genre: this.state.genre};
 		this.props.createMovie(newMovie);
 	}
-
 	render() {
 		console.log("Test...");
 		return(
@@ -132,38 +117,32 @@ class MovieForm extends React.Component {
 				<div className="col-md-2">
 					Elokuvan nimi: <input type="text" className="form-control" name="name" onChange={this.handleChange}/>
 				</div>
-				 <br/>
-
 				<div className="col-md-2">
 					Ilmestymisvuosi: <input type="text" className="form-control" name="year" onChange={this.handleChange}/>
 				</div>
- 				<br/>
 				<div className="col-md-2">
 					Genre:<input type="text" className="form-control" name="genre" onChange={this.handleChange}/>
 				</div>
-				 <br/>
-				<button className="btn btn-success" style={{marginLeft: 25}} onClick={this.handleSubmit}>Save</button>
+				<button className="btn btn-success" style={{marginLeft: 25, marginTop: 10}} onClick={this.handleSubmit}>Save</button>
 			</form>
 	</div>
 );
 	}
 }
-
 class MovieTable extends React.Component {
 	constructor(props){
 	super(props);
 }
-
 	render () {
 		var movies = this.props.movies.map(movie =>
 				<Movie key={movie._links.self.href} updateMovie={this.props.updateMovie} deleteMovie={this.props.deleteMovie} movie={movie}/>
 				);
 				return (
 				<div>
-					<table className="table table-stripped">
+					<table className="table table-bordered">
 						<thead>
 							<tr>
-								<th>name</th><th>year</th><th>genre</th><th></th>
+								<th>Name</th><th>Year</th><th>Genre</th><th></th><th></th>
 							</tr>
 						</thead>
 					<tbody>{movies}</tbody>
@@ -172,9 +151,7 @@ class MovieTable extends React.Component {
 					);
 				}
 		}
-  		        
-  		        
-  		        
+  		          		        
 class Movie extends React.Component {
 	constructor(props) {
 		super(props);
@@ -233,7 +210,6 @@ this.props.deleteMovie(this.props.movie);
         <Button
           bsStyle="primary"
           onClick={() => this.setState({ show: true })}>Edit</Button>
-
         <Modal
           show={this.state.show}
           onHide={this.handleHide}
